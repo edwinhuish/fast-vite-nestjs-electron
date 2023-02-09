@@ -7,5 +7,6 @@ contextBridge.exposeInMainWorld(
     onReplyMsg: (cb: (msg: string) => any) => ipcRenderer.on('reply-msg', (e, msg: string) => {
       cb(msg)
     }),
+    openWeb: (url: string): Promise<void> => ipcRenderer.invoke('open-web', url),
   },
 )

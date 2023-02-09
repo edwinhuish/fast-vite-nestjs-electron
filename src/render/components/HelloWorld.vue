@@ -8,7 +8,7 @@ const props = defineProps({
   },
 })
 
-const { sendMsg: sendMsgToMainProcess, onReplyMsg } = window.electron
+const { sendMsg: sendMsgToMainProcess, onReplyMsg, openWeb } = window.electron
 
 const log = ref('')
 const msg = ref('')
@@ -37,6 +37,9 @@ onReplyMsg((msg: string) => {
     <input v-model="msg" type="text" placeholder="send msg to main process">
     <button style="margin-left: 20px" @click="sendMsg">
       Send
+    </button>
+    <button style="margin-left: 20px" @click="openWeb('https://www.baidu.com')">
+      Open Chromium
     </button>
   </div>
 </template>
