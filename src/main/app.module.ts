@@ -4,6 +4,7 @@ import { ElectronModule } from '@doubleshot/nest-electron'
 import { BrowserWindow, app } from 'electron'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
+import { PlaywrightService } from './playwright.service'
 
 @Module({
   imports: [ElectronModule.registerAsync({
@@ -33,6 +34,6 @@ import { AppService } from './app.service'
     },
   })],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PlaywrightService],
 })
 export class AppModule { }

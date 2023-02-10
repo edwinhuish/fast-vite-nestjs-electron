@@ -1,14 +1,15 @@
 import { Controller } from '@nestjs/common'
 import { IpcHandle, Window } from '@doubleshot/nest-electron'
-import { chromium } from 'playwright'
 
 import { BrowserWindow } from 'electron'
 import { AppService } from './app.service'
+import { PlaywrightService } from './playwright.service'
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
+    private readonly playwrightService: PlaywrightService,
     @Window() private readonly mainWin: BrowserWindow,
   ) { }
 
@@ -21,9 +22,7 @@ export class AppController {
 
   @IpcHandle('open-web')
   public async handleOpenWeb(url: string): Promise<void> {
-    const browser = await chromium.launch({ headless: false })
-    const context = await browser.newContext()
-    const page = await context.newPage()
+    const page = await this.playwrightService.newPage()
 
     await page.goto(url)
   }
