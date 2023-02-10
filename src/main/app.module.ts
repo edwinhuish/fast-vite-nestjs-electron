@@ -36,4 +36,17 @@ import { PlaywrightService } from './playwright.service'
   controllers: [AppController],
   providers: [AppService, PlaywrightService],
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private readonly playwrightService: PlaywrightService) {
+    let asyncOperationDone = false
+
+    app.on('before-quit', async (e) => {
+      if (!asyncOperationDone) {
+        e.preventDefault()
+        await this.playwrightService.close()
+        asyncOperationDone = true
+        app.quit()
+      }
+    })
+  }
+}

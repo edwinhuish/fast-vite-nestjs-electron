@@ -4,12 +4,15 @@ import type { MicroserviceOptions } from '@nestjs/microservices'
 import { ElectronIpcTransport } from '@doubleshot/nest-electron'
 import { AppModule } from './app.module'
 
-import { PlaywrightService } from './playwright.service'
-
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
 
 async function electronAppInit() {
   const isDev = !app.isPackaged
+
+  app.on('window-all-closed', async () => {
+    if (process.platform !== 'darwin')
+      app.quit()
+  })
 
   if (isDev) {
     if (process.platform === 'win32') {
@@ -40,17 +43,6 @@ async function bootstrap() {
     )
 
     await nestApp.listen()
-
-    // 预先启动浏览器，以加快第一次启动的速度
-    const pw = nestApp.get(PlaywrightService)
-    await pw.getBrowser()
-
-    app.on('window-all-closed', async () => {
-      if (process.platform !== 'darwin') {
-        await pw.close()
-        app.quit()
-      }
-    })
   }
   catch (error) {
     // eslint-disable-next-line no-console
